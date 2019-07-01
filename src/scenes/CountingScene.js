@@ -16,6 +16,9 @@ export class CountingScene extends Phaser.Scene {
         this.mountains = this.add.tileSprite(0, 0, this.game.renderer.width, this.game.renderer.height, 'mountains');
         this.mountains.setOrigin(0, 0);
         this.mountains.setScrollFactor(0);
+        this.trees2 = this.add.tileSprite(0, 0, this.game.renderer.width, this.game.renderer.height, 'trees2');
+        this.trees2.setOrigin(0, 0);
+        this.trees2.setScrollFactor(0);
         this.trees = this.add.tileSprite(0, 0, this.game.renderer.width, this.game.renderer.height, 'trees');
         this.trees.setOrigin(0, 0);
         this.trees.setScrollFactor(0);
@@ -37,6 +40,7 @@ export class CountingScene extends Phaser.Scene {
         this.howmany = this.sound.add('howmany');
         this.goodjob = this.sound.add('goodjob');
         this.imsorry = this.sound.add('imsorry');
+        this.trainSound = this.sound.add('train');
 
         //camera
         this.camera = this.cameras.main;
@@ -57,12 +61,20 @@ export class CountingScene extends Phaser.Scene {
                 this.numberButton1.setTexture('greenButton');
                 playNumberSound(this, this.numberButton1.num);
                 setTimeout(()=> this.goodjob.play(), 1000);
+                setTimeout(()=> this.trainSound.play(), 2000);
                 setTimeout(()=> this.camera.stopFollow(), 2000);
                 setTimeout(() => this.scene.start('CountingScene'), 5000);
+                this.numberButton1.removeInteractive();
+                this.numberButton2.removeInteractive();
+                this.numberButton3.removeInteractive();
             } else {
                 this.numberButton1.setTexture('redButton');
                 playNumberSound(this, this.numberButton1.num);
-                setTimeout(()=> this.imsorry.play(), 1000);
+                setTimeout(()=> {
+                    if(!this.imsorry.isPlaying){
+                        this.imsorry.play();
+                    }
+                }, 1000);
                 setTimeout(()=> this.numberButton1.setTexture('purpleButton'), 1000);
             }
         });
@@ -72,12 +84,20 @@ export class CountingScene extends Phaser.Scene {
                 this.numberButton2.setTexture('greenButton');
                 playNumberSound(this, this.numberButton2.num);
                 setTimeout(()=> this.goodjob.play(), 1000);
+                setTimeout(()=> this.trainSound.play(), 2000);
                 setTimeout(()=> this.camera.stopFollow(), 2000);
                 setTimeout(() => this.scene.start('CountingScene'), 5000);
+                this.numberButton1.removeInteractive();
+                this.numberButton2.removeInteractive();
+                this.numberButton3.removeInteractive();
             } else {
                 this.numberButton2.setTexture('redButton');
                 playNumberSound(this, this.numberButton2.num);
-                setTimeout(()=> this.imsorry.play(), 1000);
+                setTimeout(()=> {
+                    if(!this.imsorry.isPlaying){
+                        this.imsorry.play();
+                    }
+                }, 1000);
                 setTimeout(()=> this.numberButton2.setTexture('purpleButton'), 1000);
             }
         });
@@ -87,12 +107,20 @@ export class CountingScene extends Phaser.Scene {
                 this.numberButton3.setTexture('greenButton');
                 playNumberSound(this, this.numberButton3.num);
                 setTimeout(()=> this.goodjob.play(), 1000);
+                setTimeout(()=> this.trainSound.play(), 2000);
                 setTimeout(()=> this.camera.stopFollow(), 2000);
                 setTimeout(() => this.scene.start('CountingScene'), 5000);
+                this.numberButton1.removeInteractive();
+                this.numberButton2.removeInteractive();
+                this.numberButton3.removeInteractive();
             } else {
                 this.numberButton3.setTexture('redButton');
                 playNumberSound(this, this.numberButton3.num);
-                setTimeout(()=> this.imsorry.play(), 1000);
+                setTimeout(()=> {
+                    if(!this.imsorry.isPlaying){
+                        this.imsorry.play();
+                    }
+                }, 1000);
                 setTimeout(()=> this.numberButton3.setTexture('purpleButton'), 1000);
             }
         });
@@ -104,7 +132,8 @@ export class CountingScene extends Phaser.Scene {
     update(time){
         this.sky.tilePositionX = this.camera.scrollX * .01;
         this.mountains.tilePositionX = this.camera.scrollX * .1;
-        this.trees.tilePositionX = this.camera.scrollX * .9;
+        this.trees.tilePositionX = this.camera.scrollX * .7;
+        this.trees2.tilePositionX = this.camera.scrollX * .5;
         this.ground.tilePositionX = this.camera.scrollX;
 
     }
@@ -162,28 +191,46 @@ function createButtons(scene, carNumber) {
             scene.game.renderer.width * .75, 75, 'purpleButton', carNumber);
     }
 
+    setTimeout(() => {
+        scene.numberButton1.setInteractive();
+        scene.numberButton2.setInteractive();
+        scene.numberButton3.setInteractive();
+    }, 3000);
+
     console.log(carNumber, choice1, choice2);
 }
 
 function playNumberSound(scene, num){
     switch(num){
         case 1:
-            scene.one.play();
+            if(!scene.one.isPlaying && !scene.imsorry.isPlaying){
+                scene.one.play();
+            }
             break;
         case 2:
-            scene.two.play();
+            if(!scene.two.isPlaying && !scene.imsorry.isPlaying){
+                scene.two.play();
+            }
             break;
         case 3:
-            scene.three.play();
+            if(!scene.three.isPlaying && !scene.imsorry.isPlaying){
+                scene.three.play();
+            }
             break;
         case 4:
-            scene.four.play();
+            if(!scene.four.isPlaying && !scene.imsorry.isPlaying){
+                scene.four.play();
+            }
             break;
         case 5:
-            scene.five.play();
+            if(!scene.five.isPlaying && !scene.imsorry.isPlaying){
+                scene.five.play();
+            }
             break;
         case 6:
-            scene.six.play();
+            if(!scene.six.isPlaying && !scene.imsorry.isPlaying){
+                scene.six.play();
+            }
             break;
     }
 }

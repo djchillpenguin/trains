@@ -150,6 +150,7 @@ function (_Phaser$Scene) {
       this.load.image('mountains', './assets/mountains.png');
       this.load.image('ground', './assets/ground.png');
       this.load.image('trees', './assets/trees.png');
+      this.load.image('trees2', './assets/trees2.png');
       this.load.spritesheet('locomotive', './assets/locomotive.png', {
         frameWidth: 102,
         frameHeight: 30
@@ -191,6 +192,7 @@ function (_Phaser$Scene) {
       this.load.audio('howmany', './assets/voice/howmany.mp3');
       this.load.audio('goodjob', './assets/voice/goodjob.mp3');
       this.load.audio('imsorry', './assets/voice/imsorry.mp3');
+      this.load.audio('train', './assets/train.wav');
     }
   }, {
     key: "create",
@@ -305,12 +307,16 @@ function (_Phaser$Scene) {
       this.mountains = this.add.tileSprite(0, 0, this.game.renderer.width, this.game.renderer.height, 'mountains');
       this.mountains.setOrigin(0, 0);
       this.mountains.setScrollFactor(0);
+      this.trees2 = this.add.tileSprite(0, 0, this.game.renderer.width, this.game.renderer.height, 'trees2');
+      this.trees2.setOrigin(0, 0);
+      this.trees2.setScrollFactor(0);
       this.trees = this.add.tileSprite(0, 0, this.game.renderer.width, this.game.renderer.height, 'trees');
       this.trees.setOrigin(0, 0);
       this.trees.setScrollFactor(0);
       this.ground = this.add.tileSprite(0, 0, this.game.renderer.width, this.game.renderer.height, 'ground');
       this.ground.setOrigin(0, 0);
       this.ground.setScrollFactor(0);
+      this.trainSound = this.sound.add('train');
       this.anims.create({
         key: 'locomotiveAnim',
         frames: this.anims.generateFrameNumbers('locomotive', {
@@ -367,7 +373,15 @@ function (_Phaser$Scene) {
       });
       this.locomotive = this.physics.add.sprite(100, 200, 'locomotive');
       this.locomotive.setVelocityX(100);
+      this.locomotive.setInteractive();
       this.locomotive.play('locomotiveAnim');
+      this.locomotive.on('pointerdown', function () {
+        if (!_this.trainSound.isPlaying) {
+          _this.trainSound.play();
+        }
+
+        console.log('check');
+      });
       this.boxCar1 = new _Boxcar.Boxcar(this, 19, 200, 'yellowBoxCar'); //this.boxCar1.setVelocityX(100);
 
       this.boxCar2 = new _Boxcar.Boxcar(this, -41, 200, 'blueBoxCar'); //this.boxCar2.setVelocityX(100);
@@ -393,12 +407,9 @@ function (_Phaser$Scene) {
     value: function update(time, delta) {
       this.sky.tilePositionX = this.camera.scrollX * .01;
       this.mountains.tilePositionX = this.camera.scrollX * .1;
-      this.trees.tilePositionX = this.camera.scrollX * .9;
+      this.trees.tilePositionX = this.camera.scrollX * .7;
+      this.trees2.tilePositionX = this.camera.scrollX * .5;
       this.ground.tilePositionX = this.camera.scrollX;
-      /*if (time > 5000){
-          this.camera.startFollow(this.boxCar1);
-          this.camera.setFollowOffset(135, 88);
-      }*/
     }
   }]);
 
@@ -443,8 +454,6 @@ function (_Phaser$GameObjects$S) {
     scene.sys.displayList.add(_assertThisInitialized(_assertThisInitialized(_this)));
 
     _this.setScrollFactor(0);
-
-    _this.setInteractive();
 
     _this.num = num;
     _this.numText = scene.add.text(_this.x - 13, _this.y - 25, num, {
@@ -513,6 +522,9 @@ function (_Phaser$Scene) {
       this.mountains = this.add.tileSprite(0, 0, this.game.renderer.width, this.game.renderer.height, 'mountains');
       this.mountains.setOrigin(0, 0);
       this.mountains.setScrollFactor(0);
+      this.trees2 = this.add.tileSprite(0, 0, this.game.renderer.width, this.game.renderer.height, 'trees2');
+      this.trees2.setOrigin(0, 0);
+      this.trees2.setScrollFactor(0);
       this.trees = this.add.tileSprite(0, 0, this.game.renderer.width, this.game.renderer.height, 'trees');
       this.trees.setOrigin(0, 0);
       this.trees.setScrollFactor(0);
@@ -532,7 +544,8 @@ function (_Phaser$Scene) {
       this.ten = this.sound.add('ten');
       this.howmany = this.sound.add('howmany');
       this.goodjob = this.sound.add('goodjob');
-      this.imsorry = this.sound.add('imsorry'); //camera
+      this.imsorry = this.sound.add('imsorry');
+      this.trainSound = this.sound.add('train'); //camera
 
       this.camera = this.cameras.main; //creates correct answer
 
@@ -554,17 +567,28 @@ function (_Phaser$Scene) {
             return _this.goodjob.play();
           }, 1000);
           setTimeout(function () {
+            return _this.trainSound.play();
+          }, 2000);
+          setTimeout(function () {
             return _this.camera.stopFollow();
           }, 2000);
           setTimeout(function () {
             return _this.scene.start('CountingScene');
           }, 5000);
+
+          _this.numberButton1.removeInteractive();
+
+          _this.numberButton2.removeInteractive();
+
+          _this.numberButton3.removeInteractive();
         } else {
           _this.numberButton1.setTexture('redButton');
 
           playNumberSound(_this, _this.numberButton1.num);
           setTimeout(function () {
-            return _this.imsorry.play();
+            if (!_this.imsorry.isPlaying) {
+              _this.imsorry.play();
+            }
           }, 1000);
           setTimeout(function () {
             return _this.numberButton1.setTexture('purpleButton');
@@ -580,17 +604,28 @@ function (_Phaser$Scene) {
             return _this.goodjob.play();
           }, 1000);
           setTimeout(function () {
+            return _this.trainSound.play();
+          }, 2000);
+          setTimeout(function () {
             return _this.camera.stopFollow();
           }, 2000);
           setTimeout(function () {
             return _this.scene.start('CountingScene');
           }, 5000);
+
+          _this.numberButton1.removeInteractive();
+
+          _this.numberButton2.removeInteractive();
+
+          _this.numberButton3.removeInteractive();
         } else {
           _this.numberButton2.setTexture('redButton');
 
           playNumberSound(_this, _this.numberButton2.num);
           setTimeout(function () {
-            return _this.imsorry.play();
+            if (!_this.imsorry.isPlaying) {
+              _this.imsorry.play();
+            }
           }, 1000);
           setTimeout(function () {
             return _this.numberButton2.setTexture('purpleButton');
@@ -606,17 +641,28 @@ function (_Phaser$Scene) {
             return _this.goodjob.play();
           }, 1000);
           setTimeout(function () {
+            return _this.trainSound.play();
+          }, 2000);
+          setTimeout(function () {
             return _this.camera.stopFollow();
           }, 2000);
           setTimeout(function () {
             return _this.scene.start('CountingScene');
           }, 5000);
+
+          _this.numberButton1.removeInteractive();
+
+          _this.numberButton2.removeInteractive();
+
+          _this.numberButton3.removeInteractive();
         } else {
           _this.numberButton3.setTexture('redButton');
 
           playNumberSound(_this, _this.numberButton3.num);
           setTimeout(function () {
-            return _this.imsorry.play();
+            if (!_this.imsorry.isPlaying) {
+              _this.imsorry.play();
+            }
           }, 1000);
           setTimeout(function () {
             return _this.numberButton3.setTexture('purpleButton');
@@ -632,7 +678,8 @@ function (_Phaser$Scene) {
     value: function update(time) {
       this.sky.tilePositionX = this.camera.scrollX * .01;
       this.mountains.tilePositionX = this.camera.scrollX * .1;
-      this.trees.tilePositionX = this.camera.scrollX * .9;
+      this.trees.tilePositionX = this.camera.scrollX * .7;
+      this.trees2.tilePositionX = this.camera.scrollX * .5;
       this.ground.tilePositionX = this.camera.scrollX;
     }
   }]);
@@ -680,33 +727,56 @@ function createButtons(scene, carNumber) {
     scene.numberButton3 = new _NumberButton.NumberButton(scene, scene.game.renderer.width * .75, 75, 'purpleButton', carNumber);
   }
 
+  setTimeout(function () {
+    scene.numberButton1.setInteractive();
+    scene.numberButton2.setInteractive();
+    scene.numberButton3.setInteractive();
+  }, 3000);
   console.log(carNumber, choice1, choice2);
 }
 
 function playNumberSound(scene, num) {
   switch (num) {
     case 1:
-      scene.one.play();
+      if (!scene.one.isPlaying && !scene.imsorry.isPlaying) {
+        scene.one.play();
+      }
+
       break;
 
     case 2:
-      scene.two.play();
+      if (!scene.two.isPlaying && !scene.imsorry.isPlaying) {
+        scene.two.play();
+      }
+
       break;
 
     case 3:
-      scene.three.play();
+      if (!scene.three.isPlaying && !scene.imsorry.isPlaying) {
+        scene.three.play();
+      }
+
       break;
 
     case 4:
-      scene.four.play();
+      if (!scene.four.isPlaying && !scene.imsorry.isPlaying) {
+        scene.four.play();
+      }
+
       break;
 
     case 5:
-      scene.five.play();
+      if (!scene.five.isPlaying && !scene.imsorry.isPlaying) {
+        scene.five.play();
+      }
+
       break;
 
     case 6:
-      scene.six.play();
+      if (!scene.six.isPlaying && !scene.imsorry.isPlaying) {
+        scene.six.play();
+      }
+
       break;
   }
 }
@@ -767,7 +837,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50872" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54854" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

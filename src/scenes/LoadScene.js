@@ -9,6 +9,7 @@ export class LoadScene extends Phaser.Scene {
         this.load.image('mountains', './assets/mountains.png');
         this.load.image('ground', './assets/ground.png');
         this.load.image('trees', './assets/trees.png');
+        this.load.image('trees2', './assets/trees2.png');
         
         this.load.spritesheet('locomotive', './assets/locomotive.png', { frameWidth: 102, frameHeight: 30 });
         this.load.spritesheet('blueBoxCar', './assets/blueBoxCar.png', { frameWidth: 60, frameHeight: 30 });
@@ -36,6 +37,8 @@ export class LoadScene extends Phaser.Scene {
         this.load.audio('howmany', './assets/voice/howmany.mp3');
         this.load.audio('goodjob', './assets/voice/goodjob.mp3');
         this.load.audio('imsorry', './assets/voice/imsorry.mp3');
+
+        this.load.audio('train', './assets/train.wav');
     }
     create(){
         this.scene.start("MenuScene");
